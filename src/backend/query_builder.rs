@@ -1485,8 +1485,7 @@ pub trait QueryBuilder: QuotedBuilder + EscapeBuilder + TableRefBuilder {
         collector: &mut dyn FnMut(Value),
     ) {
         let no_paren = matches!(op, BinOper::Equal | BinOper::NotEqual);
-        let left_paren = left.need_parentheses()
-            && left.is_binary()
+        let left_paren = left.is_binary()
             && *op != left.get_bin_oper().unwrap()
             && !no_paren;
         if left_paren {
@@ -1503,8 +1502,8 @@ pub trait QueryBuilder: QuotedBuilder + EscapeBuilder + TableRefBuilder {
             op,
             BinOper::Between | BinOper::NotBetween | BinOper::Like | BinOper::NotLike
         );
-        let right_paren = (right.need_parentheses()
-            || right.is_binary() && *op != left.get_bin_oper().unwrap())
+        let right_paren = right.is_binary()
+            && *op != right.get_bin_oper().unwrap()
             && !no_right_paren
             && !no_paren;
         if right_paren {
